@@ -10,4 +10,5 @@ dependencies = [
     "pydantic-settings>=2.13.1",
     "python-dotenv>=1.2.2",
     "qdrant-client[fastembed]>=1.17.1",
+    "uvicorn>=0.44.0",
 ]
