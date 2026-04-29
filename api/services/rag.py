@@ -1,29 +1,25 @@
 from importlib.metadata import metadata
 from groq import Groq
 from config.settings import settings
+from config.prompts import RAG_PROMPT
 from models.rag import RAGResponse
 from services.search import SearchService
-
 
 
 class RagService:
     def __init__(self, search_service: SearchService):
         self.search_service = search_service
         self.client = Groq(api_key=settings.groq_api_key)
-    
+
     def generate_answer(self, query: str, limit: int = 3):
         search_results = self.search_service.search(query, limit)
 
         context = "\n\n".join(result.text for result in search_results.results)
 
-        prompt = f"""Based on the following financial documents, answer the questions.
-
-        Context:
-        {context}
-
-        Question: {query}
-
-        Answer:"""
+        prompt = RAG_PROMPT.format(
+            context=context,
+            query=query,
+        )
 
         response = self.client.chat.completions.create(
             model=settings.groq_model,
@@ -32,10 +28,7 @@ class RagService:
         )
 
         metadata = [
-            {
-                **result.metadata,
-                "score": result.score
-            } 
+            {**result.metadata, "score": result.score}
             for result in search_results.results
         ]
 
