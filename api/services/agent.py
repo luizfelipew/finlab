@@ -31,12 +31,12 @@ class AgentService:
         return "\n\n".join(all_results)
 
     async def _generate_completion(self, prompt: str):
-        response = await self.client.chat.complentions.create(
+        response = await self.client.chat.completions.create(
             model=settings.groq_model,
             messages=[{"role": "system", "content": prompt}],
             temperature=0,
         )
-        return response.choice[0].message.content
+        return response.choices[0].message.content
 
     async def _analyze_fundamental(self, limit: int):
         context = self._run_queries(FUNDAMENTAL_QUERIES, limit)
@@ -50,7 +50,7 @@ class AgentService:
 
     async def _analyze_sentiment(self, ticker: str, limit: int):
         query = SENTIMENT_QUERY_TEMPLATE.format(ticker=ticker)
-        results = self.search_service(query, limit)
+        results = self.search_service.search(query, limit)
         context = "\n\n".join([result.text for result in results.results])
         prompt = SENTIMENT_PROMPT.format(context=context)
         return await self._generate_completion(prompt)
@@ -79,4 +79,5 @@ class AgentService:
             fundamental_analysis=fundamental_analysis,
             momentum_analysis=momentum_analysis,
             sentiment_analysis=sentiment_analysis,
+            final_recommendation=final_recommendation,
         )
