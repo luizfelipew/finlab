@@ -1,6 +1,7 @@
 from qdrant_client import QdrantClient, models
 from models.search import SearchResponse, SearchResult
 from services.embeddings import EmbeddingsService
+from typing import List, Optional, Dict, Any
 
 
 class SearchService:
@@ -9,10 +10,25 @@ class SearchService:
         self.collection_name = collection_name
         self.embeddings_service = EmbeddingsService()
 
-    def search(self, query: str, limit: int = 3):
+    def _build_qdrant_filter(self, filters: Optional[Dict[str, any]]) -> Optional[Dict]:
+        if not filters:
+            return None
+
+        must_conditions = []
+        for key, value in filters.items():
+            must_conditions.append(
+                {"key": f"metadata.{key}", "match": {"value": value}}
+            )
+        return {"must": must_conditions}
+
+    def search(
+        self, query: str, limit: int = 3, filter: Optional[Dict[str, any]] = None
+    ):
         query_dense, query_sparse, query_colbert = self.embeddings_service.embed_query(
             query
         )
+
+        query_filter = self._build_qdrant_filter(filter)
 
         results = self.qdrant.query_points(
             collection_name=self.collection_name,
@@ -29,7 +45,11 @@ class SearchService:
             query=query_colbert,
             using="colbert",
             limit=limit,
+            query_filter=query_filter,
         )
+
+        if not results.points:
+            return SearchResponse(results=[])
 
         max_score = max(result.score for result in results.points)
         search_results = [
