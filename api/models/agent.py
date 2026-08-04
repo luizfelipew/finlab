@@ -10,6 +10,7 @@ class FundamentalAnalysis(BaseModel):
     key_concerns: List[str] = Field(min_length=3, max_length=3)
     recommendation: Literal["buy", "sell", "hold", "avoid"]
 
+
 class MomentumAnalysis(BaseModel):
     overall_momentum: Literal["positive", "negative", "neutral"]
     momentum_strength: Literal["strong", "moderate", "weak"]
@@ -18,27 +19,31 @@ class MomentumAnalysis(BaseModel):
     short_term_outlook: Literal["bullish", "bearish", "neutral"]
     momentum_score: float = Field(ge=0, le=10)
 
+
 class SentimentAnalysis(BaseModel):
     sentiment_score: float = Field(ge=1, le=10)
-    sentiment_direction: Literal["Positive","Negative","Neutral"]
+    sentiment_direction: Literal["Positive", "Negative", "Neutral"]
     key_news_themes: List[str]
     recent_catalysts: List[str]
     market_outlook: str
 
+
 class FinalRecommendation(BaseModel):
-    action: Literal["BUY","SELL","HOLD"]
-    confidence: float = Field(ge=0,le=1)
+    action: Literal["BUY", "SELL", "HOLD"]
+    confidence: float = Field(ge=0, le=1)
     rationale: str
     key_risks: List[str]
     key_opportunities: List[str]
     time_horizon: Literal["Short_term", "Medium_term", "Long_term"]
-    
+
+
 class AgentRequest(BaseModel):
-    ticker: str
+    query: str
     limit: int = 3
 
 
 class AgentResponse(BaseModel):
+    query: str
     ticker: str
     fundamental_analysis: FundamentalAnalysis
     momentum_analysis: MomentumAnalysis
