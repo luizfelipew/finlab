@@ -30,7 +30,7 @@ class AgentService:
     def __init__(self, search_service: SearchService):
         self.search_service = search_service
         client = AsyncGroq(api_key=settings.groq_api_key)
-        self.client = instructor.from_groq(client, model=instructor.Mode.JSON)
+        self.client = instructor.from_groq(client, mode=instructor.Mode.MD_JSON)
         self.ticker_extractor = TickerExtractor()
 
     def _run_queries(self, queries: list[str], limit: int, filter: dict = None):

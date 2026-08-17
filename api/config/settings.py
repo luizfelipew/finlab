@@ -20,6 +20,6 @@ class Settings(BaseSettings):
     sparse_model: str = "Qdrant/bm25"
     colbert_model: str = "colbert-ir/colbertv2.0"
     groq_api_key: str
-    groq_model: str = "llama-3.1-8b-instant"
+    groq_model: str = "openai/gpt-oss-20b"
 
 settings = Settings()
