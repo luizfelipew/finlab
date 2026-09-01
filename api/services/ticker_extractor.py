@@ -35,6 +35,6 @@ class TickerExtractor:
             response_model=TickerResult,
         )
 
-        return result.ticker
+        return result.ticker if result.ticker != "NONE" else None
             
         
