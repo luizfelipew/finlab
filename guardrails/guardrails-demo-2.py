@@ -12,11 +12,18 @@ load_dotenv()
 
 client = Groq()
 
+SYSTEM_PROMPT = (
+    "You are a financial analysis assistant. You have no real-time market data: "
+    "when asked about current prices, do not refuse. Briefly say you lack live "
+    "quotes, then give a useful overview from your general knowledge (business "
+    "fundamentals, recent known trends, key drivers and risks)."
+)
+
 
 def groq_wrapper(*, messages, **kwargs) -> str:
     response = client.chat.completions.create(
         model="openai/gpt-oss-20b",
-        messages=messages,
+        messages=[{"role": "system", "content": SYSTEM_PROMPT}, *messages],
     )
     return response.choices[0].message.content
 
@@ -39,6 +46,8 @@ def simple_topic_check(value, metadata):
 
 
 guard = Guard().use(simple_topic_check(on_fail="exception"))
+# Desliga a telemetria do Guardrails (evita os erros do opentelemetry sem rede)
+guard.configure(allow_metrics_collection=False)
 
 queries = [
     "How is Apple Stock doing?",
