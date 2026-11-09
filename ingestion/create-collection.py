@@ -11,10 +11,13 @@ qdrant = QdrantClient(
     api_key=os.getenv("QDRANT_API_KEY"),
 )
 
+# Deleta a collection
+# qdrant.delete_collection(COLLECTION_NAME)
+
 qdrant.create_collection(
     collection_name=COLLECTION_NAME,
     vectors_config={
-        "dense": models.VectorParams(size=384, distance=models.Distance.COSINE),
+        "dense": models.VectorParams(size=1024, distance=models.Distance.COSINE),
         "colbert": models.VectorParams(
             size=128,
             distance=models.Distance.COSINE,
@@ -25,5 +28,3 @@ qdrant.create_collection(
     },
     sparse_vectors_config={"sparse": models.SparseVectorParams()},
 )
-# Deleta a collection
-# qdrant.delete_collection(COLLECTION_NAME)

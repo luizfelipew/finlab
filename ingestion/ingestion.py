@@ -8,12 +8,12 @@ from utils.edgar_client import EdgarClient
 
 load_dotenv()
 
-DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DENSE_MODEL = "intfloat/multilingual-e5-large"
 SPARSE_MODEL = "Qdrant/bm25"
 COLBERT_MODEL = "colbert-ir/colbertv2.0"
 COLLECTION_NAME = "financial"
 EMAIL = os.getenv("EMAIL_EDGAR")
-MAX_TOKENS = 300
+MAX_TOKENS = 500
 
 qdrant = QdrantClient(
     url=os.getenv("QDRANT_URL"),
@@ -27,7 +27,7 @@ qdrant.delete_collection(COLLECTION_NAME)
 qdrant.create_collection(
     collection_name=COLLECTION_NAME,
     vectors_config={
-        "dense": models.VectorParams(size=384, distance=models.Distance.COSINE),
+        "dense": models.VectorParams(size=1024, distance=models.Distance.COSINE),
         "colbert": models.VectorParams(
             size=128,
             distance=models.Distance.COSINE,
