@@ -21,30 +21,30 @@ qdrant = QdrantClient(
 )
 
 # Delete collection if it exists
-qdrant.delete_collection(COLLECTION_NAME)
+# qdrant.delete_collection(COLLECTION_NAME)
 
 # Create collection
-qdrant.create_collection(
-    collection_name=COLLECTION_NAME,
-    vectors_config={
-        "dense": models.VectorParams(size=1024, distance=models.Distance.COSINE),
-        "colbert": models.VectorParams(
-            size=128,
-            distance=models.Distance.COSINE,
-            multivector_config=models.MultiVectorConfig(
-                comparator=models.MultiVectorComparator.MAX_SIM
-            ),
-        ),
-    },
-    sparse_vectors_config={"sparse": models.SparseVectorParams()},
-)
+# qdrant.create_collection(
+#     collection_name=COLLECTION_NAME,
+#     vectors_config={
+#         "dense": models.VectorParams(size=1024, distance=models.Distance.COSINE),
+#         "colbert": models.VectorParams(
+#             size=128,
+#             distance=models.Distance.COSINE,
+#             multivector_config=models.MultiVectorConfig(
+#                 comparator=models.MultiVectorComparator.MAX_SIM
+#             ),
+#         ),
+#     },
+#     sparse_vectors_config={"sparse": models.SparseVectorParams()},
+# )
 
 # Fetch data from Edgar (10-K and 10-Q) and build chunks with metadata
 edgar = EdgarClient(email=EMAIL)
-data_10k = edgar.fetch_filing_data(ticker="AAPL", form_type="10-K")
+data_10k = edgar.fetch_filing_data(ticker="NVDA", form_type="10-K")
 text_10k = edgar.get_combine_text(data_10k)
 
-data_10q = edgar.fetch_filing_data(ticker="AAPL", form_type="10-Q")
+data_10q = edgar.fetch_filing_data(ticker="NVDA", form_type="10-Q")
 text_10q = edgar.get_combine_text(data_10q)
 
 chunker = SemanticChunker(max_tokens=MAX_TOKENS)

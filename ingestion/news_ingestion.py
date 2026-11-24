@@ -1,4 +1,3 @@
-from decorator import append
 import os
 import uuid
 
@@ -22,7 +21,7 @@ qdrant = QdrantClient(
 )
 
 news_client = NewsClient()
-news_data = news_client.fetch_news("AAPL", max_stories=10)
+news_data = news_client.fetch_news("MSFT", max_stories=10)
 
 chunker = SimpleChunker(max_tokens=MAX_TOKENS)
 
